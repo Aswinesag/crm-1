@@ -1,10 +1,13 @@
 const express = require("express");
 
 const router = express.Router();
+const { protect, restrictTo } = require("../middleware/auth");
 
 const {
   createWarehouse,getWarehouses,getWarehouseById,updateWarehouse,deleteWarehouse,
 } = require("../controllers/warehouseController");
+
+router.use(protect, restrictTo("Super Admin", "Admin"));
 
 router.post("/", createWarehouse);
 

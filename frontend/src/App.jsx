@@ -92,6 +92,12 @@ import AssemblyProcess from "./pages/Manufacturing/AssemblyProcess";
 import QualityControl from "./pages/Manufacturing/QualityControl";
 import FinishedGoodsEntry from "./pages/Manufacturing/FinishedGoodsEntry";
 import ProductionCosting from "./pages/Manufacturing/ProductionCosting";
+import Categories from "./pages/product-settings/Categories";
+import SubCategories from "./pages/product-settings/SubCategories";
+import Brands from "./pages/product-settings/Brands";
+import Units from "./pages/product-settings/Units";
+import HsnCodes from "./pages/product-settings/HsnCodes";
+import Warehouses from "./pages/product-settings/Warehouses";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -317,6 +323,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
+          {/* Product Settings */}
+          <Route path="product-settings/categories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Categories /></ProtectedRoute>} />
+          <Route path="product-settings/subcategories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><SubCategories /></ProtectedRoute>} />
+          <Route path="product-settings/brands" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Brands /></ProtectedRoute>} />
+          <Route path="product-settings/units" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Units /></ProtectedRoute>} />
+          <Route path="product-settings/hsn-codes" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><HsnCodes /></ProtectedRoute>} />
+          <Route path="product-settings/warehouses" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Warehouses /></ProtectedRoute>} />
 
           {/* Manufacturing */}
           <Route
