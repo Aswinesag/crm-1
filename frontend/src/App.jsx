@@ -98,6 +98,9 @@ import Brands from "./pages/product-settings/Brands";
 import Units from "./pages/product-settings/Units";
 import HsnCodes from "./pages/product-settings/HsnCodes";
 import Warehouses from "./pages/product-settings/Warehouses";
+import Products from "./pages/product-master/Products";
+import RawMaterials from "./pages/product-master/RawMaterials";
+import Components from "./pages/product-master/Components";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -325,6 +328,10 @@ const App = () => {
           />
 
           {/* Product Settings */}
+          <Route path="product-master/products" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Products /></ProtectedRoute>} />
+          <Route path="product-master/raw-materials" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><RawMaterials /></ProtectedRoute>} />
+          <Route path="product-master/components" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Components /></ProtectedRoute>} />
+
           <Route path="product-settings/categories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Categories /></ProtectedRoute>} />
           <Route path="product-settings/subcategories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><SubCategories /></ProtectedRoute>} />
           <Route path="product-settings/brands" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Brands /></ProtectedRoute>} />

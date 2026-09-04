@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "test": "node --test test/invoiceCalculations.test.js test/razorpayWebhook.test.js test/paymentReconciliation.integration.test.js test/subscriptionService.test.js test/productSettings.integration.test.js",
+    "test": "node --test test/invoiceCalculations.test.js test/razorpayWebhook.test.js test/paymentReconciliation.integration.test.js test/subscriptionService.test.js test/productSettings.integration.test.js test/productMaster.integration.test.js",
     "start": "nodemon server.js",
     "migrate:payment-indexes": "node utils/migrations/migratePaymentAttemptIndexes.js",
     "seed": "node utils/seedData.js"

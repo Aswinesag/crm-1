@@ -216,6 +216,15 @@ const Sidebar = ({
               { label: "Warehouses", path: "/product-settings/warehouses" },
             ],
           },
+          {
+            label: "Product Master",
+            icon: <FaShoppingCart />,
+            children: [
+              { label: "Products", path: "/product-master/products" },
+              { label: "Raw Materials", path: "/product-master/raw-materials" },
+              { label: "Components", path: "/product-master/components" },
+            ],
+          },
           { label: "Report", icon: <TbReportAnalytics />, path: "/report" },
           {
             label: "Lead History",
@@ -487,6 +496,15 @@ const Sidebar = ({
               { label: "Units", path: "/product-settings/units" },
               { label: "HSN Codes", path: "/product-settings/hsn-codes" },
               { label: "Warehouses", path: "/product-settings/warehouses" },
+            ],
+          },
+          {
+            label: "Product Master",
+            icon: <FaShoppingCart />,
+            children: [
+              { label: "Products", path: "/product-master/products" },
+              { label: "Raw Materials", path: "/product-master/raw-materials" },
+              { label: "Components", path: "/product-master/components" },
             ],
           },
           {

@@ -35,6 +35,7 @@ const invoiceRoutes = require("./routes/invoiceRoutes");
 const { razorpayWebhook } = require("./controllers/razorpayWebhookController");
 const subscriptionRoutes = require("./routes/subscriptionRoutes");
 const productSettingRoutes = require("./routes/productSettingRoutes");
+const productMasterRoutes = require("./routes/productMasterRoutes");
 const { startSubscriptionReminderScheduler } = require("./services/subscriptionReminderScheduler");
 
 const path = require("path");
@@ -107,6 +108,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/product-settings", productSettingRoutes);
+app.use("/api", productMasterRoutes);
 
 // Change this line in server.js
 app.use("/api/reports", reportRoutes); // Change from "/api/report" to "/api/reports"
