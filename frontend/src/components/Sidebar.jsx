@@ -225,6 +225,9 @@ const Sidebar = ({
               { label: "Components", path: "/product-master/components" },
             ],
           },
+          { label: "Inventory", icon: <RiBuildingLine />, children: [
+            { label: "Stock Overview", path: "/inventory/overview" }, { label: "Stock In", path: "/inventory/stock-in" }, { label: "Stock Out", path: "/inventory/stock-out" }, { label: "Stock Transfer", path: "/inventory/transfer" }, { label: "Stock Audit", path: "/inventory/audit" }, { label: "Transactions", path: "/inventory/transactions" }, { label: "Reorder Alerts", path: "/inventory/reorder-alerts" },
+          ] },
           { label: "Report", icon: <TbReportAnalytics />, path: "/report" },
           {
             label: "Lead History",
@@ -507,6 +510,9 @@ const Sidebar = ({
               { label: "Components", path: "/product-master/components" },
             ],
           },
+          { label: "Inventory", icon: <RiBuildingLine />, children: [
+            { label: "Stock Overview", path: "/inventory/overview" }, { label: "Stock In", path: "/inventory/stock-in" }, { label: "Stock Out", path: "/inventory/stock-out" }, { label: "Stock Transfer", path: "/inventory/transfer" }, { label: "Stock Audit", path: "/inventory/audit" }, { label: "Transactions", path: "/inventory/transactions" }, { label: "Reorder Alerts", path: "/inventory/reorder-alerts" },
+          ] },
           {
             label: "Report",
             icon: <TbReportAnalytics />,

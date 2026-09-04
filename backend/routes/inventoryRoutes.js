@@ -1,28 +1,16 @@
-const express = require("express");
+const router = require("express").Router();
+const { protect, restrictTo } = require("../middleware/auth");
+const controller = require("../controllers/inventoryController");
 
-const router = express.Router();
-
-const {
-  upsertInventory,getInventoryByWarehouse,getInventoryByMaterial,getInventory,
-} = require("../controllers/inventoryController");
-const {
-  transferInventory,
-} = require("../controllers/inventory/transferInventory");
-
-router.post("/", upsertInventory);
-
-router.get(
-  "/warehouse/:warehouseId",
-  getInventoryByWarehouse
-);
-
-router.get(
-  "/material/:materialId",
-  getInventoryByMaterial
-);
-
-router.get("/", getInventory);
-
-router.post("/transfer", transferInventory);
-
+router.use(protect, restrictTo("Super Admin", "Admin"));
+router.get("/", controller.getInventory);
+router.get("/transactions", controller.getTransactions);
+router.get("/audits", controller.getAudits);
+router.get("/reorder-alerts", controller.getReorderAlerts);
+router.get("/warehouse/:warehouseId", controller.getInventoryByWarehouse);
+router.get("/:itemType/:itemId", controller.getInventoryByItem);
+router.post("/stock-in", controller.stockIn);
+router.post("/stock-out", controller.stockOut);
+router.post("/transfer", controller.transfer);
+router.post("/audit", controller.audit);
 module.exports = router;
