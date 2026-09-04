@@ -101,6 +101,7 @@ import Warehouses from "./pages/product-settings/Warehouses";
 import Products from "./pages/product-master/Products";
 import RawMaterials from "./pages/product-master/RawMaterials";
 import Components from "./pages/product-master/Components";
+import InventoryWorkspace from "./pages/inventory/InventoryWorkspace";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -331,6 +332,13 @@ const App = () => {
           <Route path="product-master/products" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Products /></ProtectedRoute>} />
           <Route path="product-master/raw-materials" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><RawMaterials /></ProtectedRoute>} />
           <Route path="product-master/components" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Components /></ProtectedRoute>} />
+          <Route path="inventory/overview" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="overview" /></ProtectedRoute>} />
+          <Route path="inventory/stock-in" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="in" /></ProtectedRoute>} />
+          <Route path="inventory/stock-out" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="out" /></ProtectedRoute>} />
+          <Route path="inventory/transfer" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="transfer" /></ProtectedRoute>} />
+          <Route path="inventory/audit" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="audit" /></ProtectedRoute>} />
+          <Route path="inventory/transactions" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="transactions" /></ProtectedRoute>} />
+          <Route path="inventory/reorder-alerts" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><InventoryWorkspace mode="reorder" /></ProtectedRoute>} />
 
           <Route path="product-settings/categories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><Categories /></ProtectedRoute>} />
           <Route path="product-settings/subcategories" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><SubCategories /></ProtectedRoute>} />

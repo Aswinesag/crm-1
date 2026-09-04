@@ -1,39 +1,21 @@
-// Placeholder inventory controller
-const upsertInventory = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'Inventory upsert not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+const mongoose = require("mongoose");
+const InventoryBalance = require("../models/InventoryBalance");
+const InventoryTransaction = require("../models/InventoryTransaction");
+const InventoryAudit = require("../models/InventoryAudit");
+const Warehouse = require("../models/Warehouse");
+const { models, stockIn, stockOut, transfer, audit } = require("../services/canonicalInventoryService");
 
-const getInventoryByWarehouse = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: [] });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+const text = (value, max = 120) => String(value || "").trim().slice(0, max);
+const pageValues = (query) => ({ page: Math.max(1, parseInt(query.page, 10) || 1), limit: Math.min(200, Math.max(1, parseInt(query.limit, 10) || 10)) });
+const populated = (query) => query.populate("item").populate("warehouse", "warehouseCode warehouseName location");
+const error = (res, cause) => { if (cause?.code === 11000) return res.status(409).json({ success: false, message: "Concurrent inventory conflict; retry the request" }); if (cause?.code === 20) return res.status(503).json({ success: false, message: "Inventory writes require MongoDB replica-set transaction support" }); console.error("Inventory error:", cause); return res.status(cause.statusCode || 500).json({ success: false, message: cause.statusCode ? cause.message : "Inventory operation failed" }); };
 
-const getInventoryByMaterial = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: [] });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+const getInventory = async (req, res) => { try { const { page, limit } = pageValues(req.query), filter = {}; if (models[req.query.itemType]) filter.itemType = req.query.itemType; if (mongoose.isValidObjectId(req.query.warehouse)) filter.warehouse = req.query.warehouse; let data = await populated(InventoryBalance.find(filter)).sort({ updatedAt: -1 }).lean(); const search = text(req.query.search).toLowerCase(), wantedStatus = req.query.stockStatus; data = data.map((row) => { const reorderLevel = Number(row.item?.reorderLevel || 0), stockStatus = row.quantity <= 0 ? "Out of Stock" : row.quantity <= reorderLevel ? "Low Stock" : "In Stock"; return { ...row, reorderLevel, stockStatus }; }).filter((row) => (!search || [row.item?.productCode, row.item?.materialCode, row.item?.componentCode, row.item?.productName, row.item?.materialName, row.item?.componentName, row.warehouse?.warehouseName].some((value) => String(value || "").toLowerCase().includes(search))) && (!wantedStatus || row.stockStatus === wantedStatus)); const totalRecords = data.length; return res.json({ success: true, data: data.slice((page - 1) * limit, page * limit), totalRecords, currentPage: page, totalPages: Math.max(1, Math.ceil(totalRecords / limit)) }); } catch (cause) { return error(res, cause); } };
+const getInventoryByItem = async (req, res) => { try { if (!models[req.params.itemType] || !mongoose.isValidObjectId(req.params.itemId)) return res.status(400).json({ success: false, message: "Invalid item identity" }); return res.json({ success: true, data: await populated(InventoryBalance.find({ itemType: req.params.itemType, item: req.params.itemId })).lean() }); } catch (cause) { return error(res, cause); } };
+const getInventoryByWarehouse = async (req, res) => { try { if (!mongoose.isValidObjectId(req.params.warehouseId)) return res.status(400).json({ success: false, message: "Invalid warehouse ID" }); return res.json({ success: true, data: await populated(InventoryBalance.find({ warehouse: req.params.warehouseId })).lean() }); } catch (cause) { return error(res, cause); } };
+const operation = (service) => async (req, res) => { try { return res.status(201).json({ success: true, data: await service(req.body, req.user._id) }); } catch (cause) { return error(res, cause); } };
+const getTransactions = async (req, res) => { try { const { page, limit } = pageValues(req.query), filter = {}; if (models[req.query.itemType]) filter.itemType = req.query.itemType; if (mongoose.isValidObjectId(req.query.warehouse)) filter.warehouse = req.query.warehouse; if (text(req.query.movementType)) filter.movementType = text(req.query.movementType); const [data, totalRecords] = await Promise.all([populated(InventoryTransaction.find(filter)).populate("performedBy", "name email").sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(), InventoryTransaction.countDocuments(filter)]); return res.json({ success: true, data, totalRecords, currentPage: page, totalPages: Math.max(1, Math.ceil(totalRecords / limit)) }); } catch (cause) { return error(res, cause); } };
+const getAudits = async (req, res) => { try { const { page, limit } = pageValues(req.query); const [data, totalRecords] = await Promise.all([populated(InventoryAudit.find()).populate("auditedBy", "name email").sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(), InventoryAudit.countDocuments()]); return res.json({ success: true, data, totalRecords, currentPage: page, totalPages: Math.max(1, Math.ceil(totalRecords / limit)) }); } catch (cause) { return error(res, cause); } };
+const getReorderAlerts = async (req, res) => { try { const warehouseId = mongoose.isValidObjectId(req.query.warehouse) ? req.query.warehouse : null, selectedType = models[req.query.itemType] ? req.query.itemType : null, types = selectedType ? [selectedType] : Object.keys(models), warehouses = warehouseId ? await Warehouse.find({ _id: warehouseId }).lean() : [], alerts = []; for (const itemType of types) { const items = await models[itemType].find({ status: "Active" }).lean(), balances = await InventoryBalance.find({ itemType, ...(warehouseId ? { warehouse: warehouseId } : {}) }).lean(); for (const item of items) { const quantity = balances.filter((row) => String(row.item) === String(item._id)).reduce((sum, row) => sum + row.quantity, 0), reorderLevel = Number(item.reorderLevel || 0); if (quantity <= reorderLevel) alerts.push({ itemType, item, warehouse: warehouseId ? warehouses[0] || null : null, quantity, reorderLevel, stockStatus: quantity <= 0 ? "Out of Stock" : "Low Stock", suggestedQuantity: Math.max(0, reorderLevel - quantity) }); } } return res.json({ success: true, data: alerts }); } catch (cause) { return error(res, cause); } };
 
-const getInventory = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: [] });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-module.exports = {
-  upsertInventory,
-  getInventoryByWarehouse,
-  getInventoryByMaterial,
-  getInventory,
-};
+module.exports = { getInventory, getInventoryByItem, getInventoryByWarehouse, stockIn: operation(stockIn), stockOut: operation(stockOut), transfer: operation(transfer), audit: operation(audit), getTransactions, getAudits, getReorderAlerts };
