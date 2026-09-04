@@ -1,0 +1,69 @@
+const mongoose = require("mongoose");
+
+const stockInSchema = new mongoose.Schema(
+{
+    stockInNumber:{
+        type:String,
+        required:true,
+        unique:true,
+        trim:true
+    },
+    date:{
+        type:Date,
+        required:true,
+        default:Date.now
+    },
+    supplier:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Supplier",
+        required:true
+    },
+    material:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"RawMaterial",
+        required:true
+    },
+    quantity:{
+        type:Number,
+        required:true,
+        min:1
+    },
+    unitPrice:{
+        type:Number,
+        required:true,
+        min:0
+    },
+    totalCost:{
+        type:Number,
+        required:true,
+        min:0
+    },
+    warehouse:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Warehouse",
+        required:true
+    },
+    remarks:{
+        type:String,
+        trim:true,
+        default:""
+    },
+    isActive:{
+        type:Boolean,
+        default:true
+    },
+    createdBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    },
+    updatedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }
+},
+{
+    timestamps:true
+}
+);
+
+module.exports = mongoose.model("StockIn",stockInSchema);

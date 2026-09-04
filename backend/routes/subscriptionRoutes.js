@@ -1,0 +1,11 @@
+const router = require("express").Router();
+const { protect } = require("../middleware/auth");
+const c = require("../controllers/subscriptionController");
+router.use(protect);
+router.route("/plans").get(c.getPlans).post(c.createPlan);
+router.get("/reminders", c.listReminders);
+router.post("/reminders/run", c.runReminders);
+router.get("/", c.listSubscriptions);
+router.post("/purchase", c.purchase);
+router.post("/:id/renew", c.renew);
+module.exports = router;
