@@ -13,7 +13,7 @@ import { RiUserFollowLine } from "react-icons/ri";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { MdManageHistory, MdManageAccounts } from "react-icons/md";
-import { RiTruckLine, RiBuildingLine } from "react-icons/ri";
+import { RiTruckLine, RiBuildingLine, RiSettings3Line } from "react-icons/ri";
 import { IoChevronBack, IoChevronForward, IoChevronDown} from "react-icons/io5";
 import { FiFileText, FiCreditCard, FiRefreshCw } from "react-icons/fi";
 
@@ -202,6 +202,18 @@ const Sidebar = ({
                 label: "Production Costing",
                 path: "/production-costing",
               },
+            ],
+          },
+          {
+            label: "Product Settings",
+            icon: <RiSettings3Line />,
+            children: [
+              { label: "Categories", path: "/product-settings/categories" },
+              { label: "Subcategories", path: "/product-settings/subcategories" },
+              { label: "Brands", path: "/product-settings/brands" },
+              { label: "Units", path: "/product-settings/units" },
+              { label: "HSN Codes", path: "/product-settings/hsn-codes" },
+              { label: "Warehouses", path: "/product-settings/warehouses" },
             ],
           },
           { label: "Report", icon: <TbReportAnalytics />, path: "/report" },
@@ -463,6 +475,18 @@ const Sidebar = ({
                 label: "Production Costing",
                 path: "/production-costing",
               },
+            ],
+          },
+          {
+            label: "Product Settings",
+            icon: <RiSettings3Line />,
+            children: [
+              { label: "Categories", path: "/product-settings/categories" },
+              { label: "Subcategories", path: "/product-settings/subcategories" },
+              { label: "Brands", path: "/product-settings/brands" },
+              { label: "Units", path: "/product-settings/units" },
+              { label: "HSN Codes", path: "/product-settings/hsn-codes" },
+              { label: "Warehouses", path: "/product-settings/warehouses" },
             ],
           },
           {
