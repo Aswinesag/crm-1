@@ -1,0 +1,11 @@
+const express = require("express");
+const controller = require("../controllers/supplierPaymentController");
+const { protect, restrictTo } = require("../middleware/auth");
+const router = express.Router();
+router.use(protect, restrictTo("Super Admin", "Admin"));
+router.get("/", controller.list);
+router.post("/preview", controller.preview);
+router.post("/", controller.create);
+router.get("/:id", controller.detail);
+router.post("/:id/reverse", controller.reverse);
+module.exports = router;

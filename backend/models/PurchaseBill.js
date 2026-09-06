@@ -31,6 +31,7 @@ const schema = new mongoose.Schema({
   matchStatus: { type: String, enum: ["NOT_CHECKED", "MATCHED", "EXCEPTION"], default: "NOT_CHECKED", index: true },
   matchSummary: { quantityMatched: { type: Boolean, default: false }, priceMatched: { type: Boolean, default: false }, duplicateInvoice: { type: Boolean, default: false }, totalExceptions: { type: Number, default: 0 }, checkedAt: Date },
   grnsConsidered: [{ type: mongoose.Schema.Types.ObjectId, ref: "GRN" }], reservationActive: { type: Boolean, default: false, index: true },
+  accountsPayable: { type: mongoose.Schema.Types.ObjectId, ref: "AccountsPayable", default: null }, paymentStatus: { type: String, enum: ["UNPAID", "PARTIALLY_PAID", "PAID"], default: "UNPAID", index: true }, paidAmountMinor: { type: Number, min: 0, default: 0 }, outstandingAmountMinor: { type: Number, min: 0, default: 0 },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, submittedAt: Date, submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, approvedAt: Date, approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, rejectedAt: Date, rejectedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, rejectionReason: String,
   exceptionOverride: { approved: { type: Boolean, default: false }, reason: String, approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, approvedAt: Date },
   auditTrail: [auditSchema], matchHistory: [historySchema],

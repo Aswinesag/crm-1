@@ -103,6 +103,10 @@ const Sidebar = ({
                 path: "/supplier-payments",
               },
               {
+                label: "Accounts Payable",
+                path: "/accounts-payable",
+              },
+              {
                 label: "Purchase Bills",
                 path: "/procurement/purchase-bills",
               },
@@ -390,6 +394,10 @@ const Sidebar = ({
               {
                 label: "Supplier Payments",
                 path: "/supplier-payments",
+              },
+              {
+                label: "Accounts Payable",
+                path: "/accounts-payable",
               },
               {
                 label: "Purchase Bills",

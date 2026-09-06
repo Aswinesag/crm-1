@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const PurchaseBill = require("../models/PurchaseBill");
 const PurchaseOrder = require("../models/PurchaseOrder");
 const GRN = require("../models/grn/grnModel");
+const { ensureForApprovedBill } = require("./accountsPayableService");
 
 const fail = (message, statusCode = 400, code) => Object.assign(new Error(message), { statusCode, businessCode: code });
 const normalizeInvoice = (value) => String(value || "").trim().toUpperCase();
@@ -141,7 +142,7 @@ const changeFinalState = async (id, userId, action, reason = "") => {
     if (action === "APPROVE" && bill.matchStatus !== "MATCHED") throw fail("Exception bills require the explicit override approval action", 409);
     if (action === "OVERRIDE") { if (bill.matchStatus !== "EXCEPTION") throw fail("Only exception bills use override approval", 409); if (!String(reason).trim()) throw fail("Exception override reason is required"); bill.exceptionOverride = { approved: true, reason: String(reason).trim(), approvedBy: userId, approvedAt: new Date() }; }
     if (action === "REJECT") { if (!String(reason).trim()) throw fail("Rejection reason is required"); bill.status = "REJECTED"; bill.reservationActive = false; bill.rejectedAt = new Date(); bill.rejectedBy = userId; bill.rejectionReason = String(reason).trim(); addAudit(bill, "REJECTED", userId, reason); }
-    else { bill.status = "APPROVED"; bill.reservationActive = true; bill.approvedAt = new Date(); bill.approvedBy = userId; addAudit(bill, action === "OVERRIDE" ? "EXCEPTION_OVERRIDDEN" : "APPROVED", userId, reason); }
+    else { bill.status = "APPROVED"; bill.reservationActive = true; bill.approvedAt = new Date(); bill.approvedBy = userId; addAudit(bill, action === "OVERRIDE" ? "EXCEPTION_OVERRIDDEN" : "APPROVED", userId, reason); await ensureForApprovedBill(bill, userId, session); }
     await bill.save({ session }); result = bill;
   }); return result; } finally { await session.endSession(); }
 };
