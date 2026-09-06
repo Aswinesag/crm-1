@@ -1,6 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
+const blockLegacyMaterialWrites = require("../middleware/blockLegacyMaterialWrites");
 
 const {
   stockInMaterial,
@@ -13,9 +14,9 @@ const {
   getStockTransactions,
 } = require("../controllers/stockTransactionController");
 
-router.post("/in", stockInMaterial);
+router.post("/in", blockLegacyMaterialWrites);
 
-router.post("/out", stockOutMaterial);
+router.post("/out", blockLegacyMaterialWrites);
 
 router.get("/transactions", getStockTransactions);
 

@@ -1,0 +1,8 @@
+[
+  {
+    "legacyMaterialId": "000000000000000000000001",
+    "itemType": "RawMaterial",
+    "item": "000000000000000000000002",
+    "reason": "Manually verified against legacy material code RM-001"
+  }
+]

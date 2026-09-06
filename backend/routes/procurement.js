@@ -4,6 +4,7 @@ const { protect } = require('../middleware/auth');
 
 
 const router = express.Router();
+const blockLegacyMaterialWrites = require("../middleware/blockLegacyMaterialWrites");
 
 
 // AUTO GENERATE PR
@@ -11,7 +12,7 @@ const router = express.Router();
 router.get(
     "/auto-pr",
     protect,
-    autoGeneratePR
+    blockLegacyMaterialWrites
 );
 
 

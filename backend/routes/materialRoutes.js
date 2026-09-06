@@ -11,8 +11,9 @@ const {
 
 
 const router = express.Router();
+const blockLegacyMaterialWrites = require("../middleware/blockLegacyMaterialWrites");
 
-router.post("/", createMaterial);
+router.post("/", blockLegacyMaterialWrites);
 
 router.get("/", getAllMaterials);
 
@@ -23,9 +24,9 @@ router.get("/:id", getSingleMaterial);
 
 // UPDATE MATERIAL
 
-router.put("/:id", updateMaterial);
+router.put("/:id", blockLegacyMaterialWrites);
 
 
-router.delete("/:id", deleteMaterial);
+router.delete("/:id", blockLegacyMaterialWrites);
 
 module.exports = router;
