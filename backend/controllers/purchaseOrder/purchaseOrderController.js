@@ -4,7 +4,7 @@ const Vendor = require("../../models/Vendor");
 const Warehouse = require("../../models/Warehouse");
 const { models } = require("../../services/canonicalInventoryService");
 
-const populated = (query) => query.populate("vendorId", "vendorCode vendorName email phone").populate("warehouseId", "warehouseCode warehouseName").populate("items.item");
+const populated = (query) => query.populate("vendorId", "vendorCode vendorName email phone").populate("warehouseId", "warehouseCode warehouseName").populate("sourceRequisition", "requisitionNo status").populate("sourceRFQ", "rfqNumber status").populate("items.item");
 const error = (res, cause) => res.status(cause.statusCode || (cause.name === "ValidationError" ? 400 : 500)).json({ success: false, message: cause.statusCode || cause.name === "ValidationError" ? cause.message : "Purchase Order operation failed" });
 const validate = async (body) => {
   if (!mongoose.isValidObjectId(body.vendorId) || !(await Vendor.exists({ _id: body.vendorId }))) throw Object.assign(new Error("Valid vendor is required"), { statusCode: 400 });

@@ -57,7 +57,7 @@ const RFQTable = ({
                 </td>
 
                 <td>
-                  {rfq.quantity} {rfq.unit}
+                  {rfq.items?.length || 0}
                 </td>
 
                 <td>
@@ -72,12 +72,6 @@ const RFQTable = ({
                     >
                       View
                     </Link>
-
-                  <button
-                    className="btn btn-sm btn-warning"
-                  >
-                    Edit
-                  </button>
 
                 </td>
 

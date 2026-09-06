@@ -10,7 +10,11 @@ const {
   submitQuotation,
   closeRFQ,
   getRFQById,
+  createPurchaseOrder,
 } = require("../controllers/rfq/rfqController");
+const { protect, restrictTo } = require("../middleware/auth");
+
+router.use(protect, restrictTo("Super Admin", "Admin"));
 
 
 
@@ -41,7 +45,6 @@ router.put("/:id/quotation", submitQuotation);
 
 // CLOSE RFQ
 router.put("/:id/close", closeRFQ);
-
-router.get("/:id", getRFQById);
+router.post("/:id/purchase-order", createPurchaseOrder);
 
 module.exports = router;

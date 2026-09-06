@@ -9,6 +9,11 @@ const lineSchema = new mongoose.Schema({
   unitSnapshot: { type: String, trim: true, default: "" },
   itemCodeSnapshot: { type: String, trim: true, default: "" },
   itemNameSnapshot: { type: String, trim: true, default: "" },
+  sourcePR: { type: mongoose.Schema.Types.ObjectId, ref: "PurchaseRequisition", default: null },
+  sourcePRLine: { type: mongoose.Schema.Types.ObjectId, default: null },
+  sourceRFQ: { type: mongoose.Schema.Types.ObjectId, ref: "RFQ", default: null },
+  sourceRFQLine: { type: mongoose.Schema.Types.ObjectId, default: null },
+  sourceQuotation: { type: mongoose.Schema.Types.ObjectId, default: null },
 }, { _id: true });
 
 lineSchema.virtual("pendingQuantity").get(function () {
@@ -26,11 +31,16 @@ const schema = new mongoose.Schema({
   notes: { type: String, trim: true, maxlength: 1000, default: "" },
   status: { type: String, enum: ["DRAFT", "APPROVED", "SENT", "PARTIALLY_RECEIVED", "RECEIVED", "CANCELLED"], default: "DRAFT" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  sourceRequisition: { type: mongoose.Schema.Types.ObjectId, ref: "PurchaseRequisition", default: null },
+  sourceRFQ: { type: mongoose.Schema.Types.ObjectId, ref: "RFQ", default: null },
+  sourceQuotation: { type: mongoose.Schema.Types.ObjectId, default: null },
+  conversionKey: { type: String, trim: true },
 }, { timestamps: true, optimisticConcurrency: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 schema.pre("validate", function (next) {
   if (this.items.some((line) => Number(line.receivedQuantity || 0) > Number(line.quantity))) return next(new Error("Received quantity cannot exceed ordered quantity"));
   next();
 });
+schema.index({ conversionKey: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.models.PurchaseOrder || mongoose.model("PurchaseOrder", schema);

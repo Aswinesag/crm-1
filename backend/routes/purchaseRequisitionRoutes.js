@@ -7,9 +7,13 @@ const {
   getAllPurchaseRequisitions,
   getSinglePurchaseRequisition,
   updatePurchaseRequisitionStatus,
+  convertToRFQ,
 } = require(
   "../controllers/purchaseRequisition/purchaseRequisitionController"
 );
+const { protect, restrictTo } = require("../middleware/auth");
+
+router.use(protect, restrictTo("Super Admin", "Admin"));
 
 
 
@@ -33,5 +37,6 @@ router.put(
   "/:id/status",
   updatePurchaseRequisitionStatus
 );
+router.post("/:id/rfq", convertToRFQ);
 
 module.exports = router;

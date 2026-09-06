@@ -1,39 +1,11 @@
-// Placeholder purchase requisition controller
-const createPurchaseRequisition = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'PR creation not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const getAllPurchaseRequisitions = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: [] });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const getSinglePurchaseRequisition = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: {} });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const updatePurchaseRequisitionStatus = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'PR status update not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-module.exports = {
-  createPurchaseRequisition,
-  getAllPurchaseRequisitions,
-  getSinglePurchaseRequisition,
-  updatePurchaseRequisitionStatus,
-};
+const mongoose = require("mongoose");
+const PurchaseRequisition = require("../../models/PurchaseRequisition");
+const { createRequisition, createRFQFromPR } = require("../../services/procurementIdentityService");
+const populated = (query) => query.populate("items.item").populate("requestedBy approvedBy", "name email");
+const sendError = (res, error) => { if (error?.code === 11000) return res.status(409).json({ success: false, message: "Duplicate procurement conversion or document number" }); console.error("Purchase Requisition error:", error); return res.status(error.statusCode || (error.name === "ValidationError" ? 400 : 500)).json({ success: false, message: error.statusCode || error.name === "ValidationError" ? error.message : "Purchase Requisition operation failed" }); };
+const createPurchaseRequisition = async (req, res) => { try { return res.status(201).json({ success: true, data: await createRequisition(req.body, req.user._id) }); } catch (error) { return sendError(res, error); } };
+const getAllPurchaseRequisitions = async (req, res) => { try { const data = await populated(PurchaseRequisition.find()).sort({ createdAt: -1 }); return res.json({ success: true, data, count: data.length }); } catch (error) { return sendError(res, error); } };
+const getSinglePurchaseRequisition = async (req, res) => { try { if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, message: "Invalid Purchase Requisition ID" }); const data = await populated(PurchaseRequisition.findById(req.params.id)); if (!data) return res.status(404).json({ success: false, message: "Purchase Requisition not found" }); return res.json({ success: true, data }); } catch (error) { return sendError(res, error); } };
+const updatePurchaseRequisitionStatus = async (req, res) => { try { const pr = await PurchaseRequisition.findById(req.params.id); if (!pr) return res.status(404).json({ success: false, message: "Purchase Requisition not found" }); const allowed = { DRAFT: ["PENDING", "CANCELLED"], PENDING: ["APPROVED", "REJECTED", "CANCELLED"], APPROVED: ["CANCELLED"] }; const status = String(req.body.status || "").toUpperCase(); if (!(allowed[pr.status] || []).includes(status)) return res.status(409).json({ success: false, message: `Cannot change Purchase Requisition from ${pr.status} to ${status}` }); pr.status = status; if (status === "APPROVED") { pr.approvedBy = req.user._id; pr.approvedAt = new Date(); } await pr.save(); return res.json({ success: true, data: pr }); } catch (error) { return sendError(res, error); } };
+const convertToRFQ = async (req, res) => { try { const data = await createRFQFromPR(req.params.id, req.body, req.user._id); return res.status(data.alreadyCreated ? 200 : 201).json({ success: true, message: data.alreadyCreated ? "RFQ already exists for this sourcing round" : "RFQ created from approved requisition", data: data.rfq }); } catch (error) { return sendError(res, error); } };
+module.exports = { createPurchaseRequisition, getAllPurchaseRequisitions, getSinglePurchaseRequisition, updatePurchaseRequisitionStatus, convertToRFQ };
