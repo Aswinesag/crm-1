@@ -1,22 +1,6 @@
-import axios from "axios";
-
-const API =
-  "http://localhost:5002/api/purchase-requisitions";
-
-export const getAllPRs = () =>
-  axios.get(API);
-
-export const getSinglePR = (id) =>
-  axios.get(`${API}/${id}`);
-
-export const createPR = (data) =>
-  axios.post(API, data);
-
-export const updatePRStatus = (
-  id,
-  data
-) =>
-  axios.put(
-    `${API}/${id}/status`,
-    data
-  );
+import axiosInstance from "../api/axiosInstance.jsx";
+export const getAllPRs = async () => (await axiosInstance.get("/purchase-requisitions")).data;
+export const getSinglePR = async (id) => (await axiosInstance.get(`/purchase-requisitions/${id}`)).data;
+export const createPR = async (data) => (await axiosInstance.post("/purchase-requisitions", data)).data;
+export const updatePRStatus = async (id, status) => (await axiosInstance.put(`/purchase-requisitions/${id}/status`, { status })).data;
+export const createRFQFromPR = async (id, data) => (await axiosInstance.post(`/purchase-requisitions/${id}/rfq`, data)).data;

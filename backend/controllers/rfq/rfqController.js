@@ -1,66 +1,13 @@
-// Placeholder RFQ controller
-const createRFQ = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'RFQ creation not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const getAllRFQs = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: [] });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const getSingleRFQ = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: {} });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const sendRFQ = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'RFQ sending not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const submitQuotation = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'Quotation submission not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const closeRFQ = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, message: 'RFQ closing not yet implemented' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-const getRFQById = async (req, res) => {
-  try {
-    res.status(200).json({ success: true, data: {} });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-module.exports = {
-  createRFQ,
-  getAllRFQs,
-  getSingleRFQ,
-  sendRFQ,
-  submitQuotation,
-  closeRFQ,
-  getRFQById,
-};
+const mongoose = require("mongoose");
+const RFQ = require("../../models/RFQ");
+const { createRFQFromPR, submitQuotation: saveQuotation, createPOFromRFQ } = require("../../services/procurementIdentityService");
+const populated = (query) => query.populate("sourceRequisition", "requisitionNo status").populate("items.item").populate("vendorIds quotations.vendor", "vendorCode vendorName email").populate("createdBy", "name email");
+const sendError = (res, error) => { if (error?.code === 11000) return res.status(409).json({ success: false, message: "Duplicate conversion or document number" }); if ([20, 251].includes(error?.code)) return res.status(503).json({ success: false, message: "Procurement conversions require MongoDB replica-set transaction support" }); console.error("RFQ error:", error); return res.status(error.statusCode || (error.name === "ValidationError" ? 400 : 500)).json({ success: false, message: error.statusCode || error.name === "ValidationError" ? error.message : "RFQ operation failed" }); };
+const createRFQ = async (req, res) => { try { if (!req.body.purchaseRequisition) return res.status(400).json({ success: false, message: "RFQs must be created from an approved Purchase Requisition" }); const data = await createRFQFromPR(req.body.purchaseRequisition, req.body, req.user._id); return res.status(data.alreadyCreated ? 200 : 201).json({ success: true, data: data.rfq }); } catch (error) { return sendError(res, error); } };
+const getAllRFQs = async (req, res) => { try { const filter = req.query.status ? { status: req.query.status } : {}; const data = await populated(RFQ.find(filter)).sort({ createdAt: -1 }); return res.json({ success: true, data, count: data.length }); } catch (error) { return sendError(res, error); } };
+const getSingleRFQ = async (req, res) => { try { if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, message: "Invalid RFQ ID" }); const data = await populated(RFQ.findById(req.params.id)); if (!data) return res.status(404).json({ success: false, message: "RFQ not found" }); return res.json({ success: true, data }); } catch (error) { return sendError(res, error); } };
+const sendRFQ = async (req, res) => { try { const data = await RFQ.findOneAndUpdate({ _id: req.params.id, status: "DRAFT", vendorIds: { $not: { $size: 0 } } }, { status: "SENT" }, { new: true }); if (!data) return res.status(409).json({ success: false, message: "Only a Draft RFQ with invited vendors can be sent" }); return res.json({ success: true, data }); } catch (error) { return sendError(res, error); } };
+const submitQuotation = async (req, res) => { try { return res.json({ success: true, data: await saveQuotation(req.params.id, req.body) }); } catch (error) { return sendError(res, error); } };
+const closeRFQ = async (req, res) => { try { const data = await RFQ.findOneAndUpdate({ _id: req.params.id, status: { $nin: ["ORDERED", "CLOSED", "CANCELLED"] } }, { status: "CLOSED" }, { new: true }); if (!data) return res.status(409).json({ success: false, message: "RFQ cannot be closed from its current status" }); return res.json({ success: true, data }); } catch (error) { return sendError(res, error); } };
+const createPurchaseOrder = async (req, res) => { try { const data = await createPOFromRFQ(req.params.id, req.body, req.user._id); return res.status(data.alreadyCreated ? 200 : 201).json({ success: true, message: data.alreadyCreated ? "Purchase Order already exists for this allocation" : "Purchase Order created", data: data.purchaseOrder }); } catch (error) { return sendError(res, error); } };
+module.exports = { createRFQ, getAllRFQs, getSingleRFQ, getRFQById: getSingleRFQ, sendRFQ, submitQuotation, closeRFQ, createPurchaseOrder };
