@@ -1,6 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
+const blockLegacyMaterialWrites = require("../middleware/blockLegacyMaterialWrites");
 
 
 
@@ -25,7 +26,7 @@ const {
 // CREATE VENDOR-MATERIAL LINK
 // =============================================
 // POST /api/vendor-materials
-router.post("/", createVendorMaterial);
+router.post("/", blockLegacyMaterialWrites);
 
 
 
@@ -71,7 +72,7 @@ router.get("/:id", getSingleVendorMaterial);
 // UPDATE VENDOR-MATERIAL LINK
 // =============================================
 // PUT /api/vendor-materials/:id
-router.put("/:id", updateVendorMaterial);
+router.put("/:id", blockLegacyMaterialWrites);
 
 
 
@@ -79,7 +80,7 @@ router.put("/:id", updateVendorMaterial);
 // DELETE VENDOR-MATERIAL LINK
 // =============================================
 // DELETE /api/vendor-materials/:id
-router.delete("/:id", deleteVendorMaterial);
+router.delete("/:id", blockLegacyMaterialWrites);
 
 
 

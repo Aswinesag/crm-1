@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const blockLegacyMaterialWrites = require("../../middleware/blockLegacyMaterialWrites");
 
 const {
   createVendor, getAllVendors, getVendorById, updateVendor, deleteVendor, assignMaterialsToVendor,
@@ -15,6 +16,6 @@ router.put("/:id", updateVendor);
 
 router.delete("/:id", deleteVendor);
 
-router.put("/:vendorId/materials", assignMaterialsToVendor);
+router.put("/:vendorId/materials", blockLegacyMaterialWrites);
 
 module.exports = router;

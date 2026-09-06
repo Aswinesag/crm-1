@@ -2,6 +2,7 @@ const express = require("express");
 
 const router =
   express.Router();
+const blockLegacyMaterialWrites = require("../../middleware/blockLegacyMaterialWrites");
 
 const {
   createStockIssue,
@@ -13,7 +14,7 @@ const {
 
 router.post(
   "/",
-  createStockIssue
+  blockLegacyMaterialWrites
 );
 
 router.get(
