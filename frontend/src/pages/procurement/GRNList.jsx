@@ -61,14 +61,14 @@ const GRNList = () => {
 
         <div className="stat bg-base-100 rounded-xl shadow">
           <div className="stat-title">
-            Completed
+            Posted
           </div>
           <div className="stat-value">
             {
               grns.filter(
                 (g) =>
                   g.status ===
-                  "Completed"
+                  "Posted"
               ).length
             }
           </div>

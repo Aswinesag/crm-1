@@ -1,66 +1,9 @@
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance.jsx";
 
-const API_URL =
-  "http://localhost:5002/api/grns";
-
-const getConfig = () => ({
-  headers: {
-    Authorization: `Bearer ${
-      localStorage.getItem("token")
-    }`,
-  },
-});
-
-export const getAllGRNs = async () => {
-  const res = await axios.get(
-    API_URL,
-    getConfig()
-  );
-
-  return res.data;
-};
-
-export const getGRNById = async (id) => {
-  const res = await axios.get(
-    `${API_URL}/${id}`,
-    getConfig()
-  );
-
-  return res.data;
-};
-
-export const createGRN = async (
-  data
-) => {
-  const res = await axios.post(
-    API_URL,
-    data,
-    getConfig()
-  );
-
-  return res.data;
-};
-
-export const updateGRN = async (
-  id,
-  data
-) => {
-  const res = await axios.put(
-    `${API_URL}/${id}`,
-    data,
-    getConfig()
-  );
-
-  return res.data;
-};
-
-export const deleteGRN = async (
-  id
-) => {
-  const res = await axios.delete(
-    `${API_URL}/${id}`,
-    getConfig()
-  );
-
-  return res.data;
-};
+export const getAllGRNs = async () => (await axiosInstance.get("/grns")).data;
+export const getGRNById = async (id) => (await axiosInstance.get(`/grns/${id}`)).data;
+export const createGRN = async (data) => (await axiosInstance.post("/grns", data)).data;
+export const updateGRN = async (id, data) => (await axiosInstance.put(`/grns/${id}`, data)).data;
+export const deleteGRN = async (id) => (await axiosInstance.delete(`/grns/${id}`)).data;
+export const postGRN = async (id) => (await axiosInstance.post(`/grns/${id}/post`)).data;
+export const reverseGRN = async (id, reason) => (await axiosInstance.post(`/grns/${id}/reverse`, { reason })).data;

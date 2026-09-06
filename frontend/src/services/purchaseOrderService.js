@@ -1,23 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance.jsx";
 
-const API_URL =
-  "http://localhost:5002/api/purchase-orders";
-
-export const getAllPurchaseOrders =
-  async () => {
-    const res =
-      await axios.get(API_URL);
-
-    return res.data.data;
-  };
-
-export const getPurchaseOrderById =
-  async (id) => {
-    const res =
-      await axios.get(
-        `${API_URL}/${id}`
-      );
-
-    return res.data.data;
-  };
-
+export const getAllPurchaseOrders = async () => (await axiosInstance.get("/purchase-orders")).data.data;
+export const getPurchaseOrderById = async (id) => (await axiosInstance.get(`/purchase-orders/${id}`)).data.data;
