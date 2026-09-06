@@ -1,6 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
+const { protect, restrictTo } = require("../middleware/auth");
 
 const {
   createPurchaseOrder,
@@ -10,6 +11,8 @@ const {
 } = require(
   "../controllers/purchaseOrder/purchaseOrderController"
 );
+
+router.use(protect, restrictTo("Super Admin", "Admin"));
 
 
 

@@ -17,4 +17,8 @@ const schema = new mongoose.Schema({
 }, { timestamps: true });
 
 schema.index({ createdAt: -1 });
+schema.index(
+  { referenceType: 1, referenceId: 1, batchId: 1, movementType: 1 },
+  { unique: true, partialFilterExpression: { referenceType: "GRN" } }
+);
 module.exports = mongoose.model("InventoryTransaction", schema);
