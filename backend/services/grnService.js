@@ -5,6 +5,7 @@ const PurchaseOrder = require("../models/PurchaseOrder");
 const InventoryBalance = require("../models/InventoryBalance");
 const InventoryTransaction = require("../models/InventoryTransaction");
 const Warehouse = require("../models/Warehouse");
+const PurchaseBill = require("../models/PurchaseBill");
 const { models, validateIdentity, ledger } = require("./canonicalInventoryService");
 
 const fail = (message, statusCode = 400) => Object.assign(new Error(message), { statusCode });
@@ -92,6 +93,7 @@ const reverse = async (id, userId, reason) => {
       if (!grn) throw fail("GRN not found", 404);
       if (grn.status === "Reversed") throw fail("GRN has already been reversed", 409);
       if (grn.status !== "Posted") throw fail("Only a Posted GRN can be reversed", 409);
+      if (await PurchaseBill.exists({ purchaseOrder: grn.purchaseOrder, $or: [{ reservationActive: true }, { status: "APPROVED" }] }).session(session)) throw fail("Cannot reverse receipt because supplier billing depends on this receipt.", 409);
       const po = await PurchaseOrder.findById(grn.purchaseOrder).session(session);
       if (!po) throw fail("Purchase Order not found", 409);
       for (const line of grn.items) {

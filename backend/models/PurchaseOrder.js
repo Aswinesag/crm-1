@@ -35,6 +35,7 @@ const schema = new mongoose.Schema({
   sourceRFQ: { type: mongoose.Schema.Types.ObjectId, ref: "RFQ", default: null },
   sourceQuotation: { type: mongoose.Schema.Types.ObjectId, default: null },
   conversionKey: { type: String, trim: true },
+  billingVersion: { type: Number, default: 0, select: false },
 }, { timestamps: true, optimisticConcurrency: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 schema.pre("validate", function (next) {

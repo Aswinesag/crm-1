@@ -64,6 +64,9 @@ import PurchaseOrderDetails from "./pages/procurement/PurchaseOrderDetails";
 import GRNList from "./pages/procurement/GRNList";
 import CreateGRN from "./pages/procurement/CreateGRN";
 import GRNDetails from "./pages/procurement/GRNDetails";
+import PurchaseBillList from "./pages/procurement/PurchaseBillList";
+import CreatePurchaseBill from "./pages/procurement/CreatePurchaseBill";
+import PurchaseBillDetails from "./pages/procurement/PurchaseBillDetails";
 import InvoiceManagement from "./pages/BillingAndFinance/InvoiceManagement";
 import CreditNotes from "./pages/BillingAndFinance/CreditNotes";
 import DebitNotes from "./pages/BillingAndFinance/DebitNotes";
@@ -176,6 +179,9 @@ const App = () => {
           <Route path="/procurement/grns" element={<GRNList />}/>
           <Route path="/procurement/grns/create" element={<CreateGRN />}/>
           <Route path="/procurement/grns/:id" element={<GRNDetails />}/>
+          <Route path="/procurement/purchase-bills" element={<PurchaseBillList />}/>
+          <Route path="/procurement/purchase-bills/new" element={<CreatePurchaseBill />}/>
+          <Route path="/procurement/purchase-bills/:id" element={<PurchaseBillDetails />}/>
 
           {/* Billing & Finance Routes */}
           <Route

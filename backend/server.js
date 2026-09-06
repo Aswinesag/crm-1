@@ -99,6 +99,7 @@ app.use("/api/purchase-requisitions", purchaseRequisitionRoutes);
 app.use("/api/rfqs", rfqRoutes);
 app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/grns", require("./routes/grnRoutes"));
+app.use("/api/purchase-bills", require("./routes/purchaseBillRoutes"));
 app.use("/api/stock-movements", stockMovementRoutes);
 app.use("/api/dashboard", inventoryDashboardRoutes);
 app.use("/api/stock-issues", stockIssueRoutes);
