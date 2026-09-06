@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "test": "node --test test/invoiceCalculations.test.js test/razorpayWebhook.test.js test/paymentReconciliation.integration.test.js test/subscriptionService.test.js test/productSettings.integration.test.js test/productMaster.integration.test.js test/inventory.integration.test.js test/grn.integration.test.js test/procurementIdentity.integration.test.js test/procurementMigration.integration.test.js",
+    "test": "node --test test/invoiceCalculations.test.js test/razorpayWebhook.test.js test/paymentReconciliation.integration.test.js test/subscriptionService.test.js test/productSettings.integration.test.js test/productMaster.integration.test.js test/inventory.integration.test.js test/grn.integration.test.js test/procurementIdentity.integration.test.js test/procurementMigration.integration.test.js test/purchaseBill.integration.test.js",
     "start": "nodemon server.js",
     "migrate:payment-indexes": "node utils/migrations/migratePaymentAttemptIndexes.js",
     "survey:legacy-procurement": "node utils/migrations/procurementIdentityCli.js audit",
