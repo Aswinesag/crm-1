@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const blockLegacyMaterialWrites = require("../../middleware/blockLegacyMaterialWrites");
+const { protect, restrictTo } = require("../../middleware/auth");
 
 const {
   createVendor, getAllVendors, getVendorById, updateVendor, deleteVendor, assignMaterialsToVendor,
@@ -14,7 +15,7 @@ router.get("/:id", getVendorById);
 
 router.put("/:id", updateVendor);
 
-router.delete("/:id", deleteVendor);
+router.delete("/:id", protect, restrictTo("Super Admin", "Admin"), deleteVendor);
 
 router.put("/:vendorId/materials", blockLegacyMaterialWrites);
 

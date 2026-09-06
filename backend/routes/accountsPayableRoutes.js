@@ -1,0 +1,10 @@
+const express = require("express");
+const controller = require("../controllers/accountsPayableController");
+const { protect, restrictTo } = require("../middleware/auth");
+const router = express.Router();
+router.use(protect, restrictTo("Super Admin", "Admin"));
+router.get("/summary", controller.summary);
+router.get("/aging", controller.aging);
+router.get("/", controller.list);
+router.get("/:id", controller.detail);
+module.exports = router;

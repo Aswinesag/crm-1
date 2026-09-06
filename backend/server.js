@@ -100,6 +100,8 @@ app.use("/api/rfqs", rfqRoutes);
 app.use("/api/purchase-orders", purchaseOrderRoutes);
 app.use("/api/grns", require("./routes/grnRoutes"));
 app.use("/api/purchase-bills", require("./routes/purchaseBillRoutes"));
+app.use("/api/accounts-payable", require("./routes/accountsPayableRoutes"));
+app.use("/api/supplier-payments", require("./routes/supplierPaymentRoutes"));
 app.use("/api/stock-movements", stockMovementRoutes);
 app.use("/api/dashboard", inventoryDashboardRoutes);
 app.use("/api/stock-issues", stockIssueRoutes);

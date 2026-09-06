@@ -73,6 +73,9 @@ import DebitNotes from "./pages/BillingAndFinance/DebitNotes";
 import CustomerPayments from "./pages/BillingAndFinance/CustomerPayments";
 import Subscriptions from "./pages/BillingAndFinance/Subscriptions";
 import SupplierPayments from "./pages/BillingAndFinance/SupplierPayments";
+import SupplierPaymentDetails from "./pages/BillingAndFinance/SupplierPaymentDetails";
+import AccountsPayable from "./pages/BillingAndFinance/AccountsPayable";
+import AccountsPayableDetails from "./pages/BillingAndFinance/AccountsPayableDetails";
 import Expenses from "./pages/BillingAndFinance/Expenses";
 import CustomerLedger from "./pages/BillingAndFinance/CustomerLedger";
 import SupplierLedger from "./pages/BillingAndFinance/SupplierLedger";
@@ -225,6 +228,9 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="supplier-payments/:id" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><SupplierPaymentDetails /></ProtectedRoute>} />
+          <Route path="accounts-payable" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><AccountsPayable /></ProtectedRoute>} />
+          <Route path="accounts-payable/:id" element={<ProtectedRoute allowedRoles={["Super Admin", "Admin"]}><AccountsPayableDetails /></ProtectedRoute>} />
           <Route
             path="expenses"
             element={
